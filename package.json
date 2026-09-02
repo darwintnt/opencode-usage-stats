@@ -10,5 +10,8 @@
   "files": [
     "install.js",
     "templates"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
