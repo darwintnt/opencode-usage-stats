@@ -20,7 +20,7 @@ No requiere tocar `opencode.json`: OpenCode detecta automáticamente los archivo
 
 ## Instalación
 
-Ejecuta uno de estos comandos según cómo distribuyas el paquete:
+Ejecuta este comando para su instalación:
 
 ```bash
 npx opencode-usage-stats
