@@ -1,73 +1,73 @@
 # opencode-usage-stats
 
-Plugin y comando `/stats` para [OpenCode](https://opencode.ai) que muestra cuántos mensajes has usado hoy, agrupados por modelo, junto con el costo total.
+Plugin and `/stats` command for [OpenCode](https://opencode.ai) that shows how many messages you've used today, grouped by model, along with the total cost.
 
-## Qué hace
+## What it does
 
-Instala dos archivos en tu configuración de OpenCode:
+Installs two files into your OpenCode configuration:
 
-- **`plugins/usage-stats.ts`** — un plugin que:
-  - Registra una tool llamada `usage_stats` que consulta la base de datos local de OpenCode (`opencode.db`) y devuelve, para el día actual, la cantidad de mensajes y el costo acumulado por modelo.
-  - Muestra automáticamente un toast con ese resumen cada vez que el agente termina de responder (solo en modo TUI).
-- **`commands/stats.md`** — el comando `/stats`, que simplemente le pide al agente que ejecute la tool `usage_stats` y muestre el resultado.
+- **`plugins/usage-stats.ts`** — a plugin that:
+  - Registers a tool called `usage_stats` that queries OpenCode's local database (`opencode.db`) and returns, for the current day, the message count and accumulated cost per model.
+  - Automatically shows a toast with that summary every time the agent finishes responding (TUI mode only).
+- **`commands/stats.md`** — the `/stats` command, which simply asks the agent to run the `usage_stats` tool and display the result.
 
-No requiere tocar `opencode.json`: OpenCode detecta automáticamente los archivos dentro de `plugins/` y `commands/`.
+No need to touch `opencode.json`: OpenCode automatically detects files inside `plugins/` and `commands/`.
 
-## Requisitos
+## Requirements
 
-- OpenCode corriendo sobre Bun (usa `bun:sqlite` para leer la base de datos).
-- Tener al menos un mensaje enviado hoy para ver datos (si no, dirá "Hoy no has enviado mensajes todavía").
+- OpenCode running on Bun (it uses `bun:sqlite` to read the database).
+- At least one message sent today to see data (otherwise it will say "You haven't sent any messages yet").
 
-## Instalación
+## Installation
 
-Ejecuta este comando para su instalación:
+Run this command to install it:
 
 ```bash
 npx @darwintnt/opencode-usage-stats
 ```
 
-Por defecto instala en la configuración **global**:
+By default it installs into the **global** configuration:
 
 - `~/.config/opencode/plugins/usage-stats.ts`
 - `~/.config/opencode/commands/stats.md`
 
-Para instalarlo solo en el proyecto actual, agrega la bandera `--project`:
+To install it only in the current project, add the `--project` flag:
 
 ```bash
 npx @darwintnt/opencode-usage-stats --project
 ```
 
-Esto lo instala en `.opencode/plugins/` y `.opencode/commands/` dentro del directorio donde ejecutes el comando.
+This installs it into `.opencode/plugins/` and `.opencode/commands/` inside the directory where you run the command.
 
-## Uso
+## Usage
 
-1. Reinicia OpenCode (o abre una sesión nueva) para que cargue el plugin.
-2. Escribe `/stats` en el chat.
-3. Verás algo como:
+1. Restart OpenCode (or open a new session) so the plugin gets loaded.
+2. Type `/stats` in the chat.
+3. You'll see something like:
 
 ```
-Mensajes de hoy (12 en total, $0.0840)
+Today's messages (12 total, $0.0840)
 • claude-sonnet-4-5: 8 msgs — $0.0620
 • gpt-5-mini: 4 msgs — $0.0220
 ```
 
-También puedes pedirle al agente directamente: "usa la tool usage_stats", sin pasar por el comando.
+You can also ask the agent directly: "use the usage_stats tool", without going through the command.
 
-## Configuración opcional
+## Optional configuration
 
-Si tu base de datos de OpenCode no está en la ruta por defecto, define la variable de entorno antes de correr OpenCode:
+If your OpenCode database is not at the default path, set the environment variable before running OpenCode:
 
 ```bash
-export OPENCODE_DB=/ruta/a/tu/opencode.db
+export OPENCODE_DB=/path/to/your/opencode.db
 ```
 
-## Desinstalar
+## Uninstall
 
-Borra manualmente los dos archivos:
+Manually delete the two files:
 
 ```bash
 rm ~/.config/opencode/plugins/usage-stats.ts
 rm ~/.config/opencode/commands/stats.md
 ```
 
-(o sus equivalentes en `.opencode/` si lo instalaste con `--project`).
+(or their `.opencode/` equivalents if you installed it with `--project`).

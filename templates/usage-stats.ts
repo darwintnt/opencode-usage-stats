@@ -4,31 +4,31 @@ import { Database } from "bun:sqlite"
 import { homedir } from "os"
 import { join } from "path"
 
-// Ajusta esta ruta si tu DB de opencode está en otro lugar,
-// o define la variable de entorno OPENCODE_DB.
+// Adjust this path if your opencode DB lives elsewhere,
+// or set the OPENCODE_DB environment variable.
 const DB_PATH = process.env.OPENCODE_DB ?? join(homedir(), ".local/share/opencode/opencode.db")
 
 const QUERY = `
   SELECT
-    date(time_created / 1000, 'unixepoch', 'localtime') AS fecha,
+    date(time_created / 1000, 'unixepoch', 'localtime') AS date,
     COALESCE(
       json_extract(data, '$.model.modelID'),
       json_extract(data, '$.modelID'),
-      'sin_modelo'
-    ) AS modelo,
-    COUNT(*) AS cantidad_mensajes,
-    ROUND(COALESCE(SUM(CAST(json_extract(data, '$.cost') AS REAL)), 0), 6) AS costo_total
+      'no_model'
+    ) AS model,
+    COUNT(*) AS message_count,
+    ROUND(COALESCE(SUM(CAST(json_extract(data, '$.cost') AS REAL)), 0), 6) AS total_cost
   FROM message
   WHERE date(time_created / 1000, 'unixepoch', 'localtime') = date('now', 'localtime')
-  GROUP BY fecha, modelo
-  ORDER BY cantidad_mensajes DESC;
+  GROUP BY date, model
+  ORDER BY message_count DESC;
 `
 
 interface Row {
-  fecha: string
-  modelo: string
-  cantidad_mensajes: number
-  costo_total: number
+  date: string
+  model: string
+  message_count: number
+  total_cost: number
 }
 
 function getStatsRows(): Row[] {
@@ -41,40 +41,40 @@ function getStatsRows(): Row[] {
 }
 
 function formatStats(rows: Row[]): string {
-  if (rows.length === 0) return "Hoy no has enviado mensajes todavía."
-  const total = rows.reduce((sum, r) => sum + r.cantidad_mensajes, 0)
-  const costoTotal = rows.reduce((sum, r) => sum + r.costo_total, 0)
+  if (rows.length === 0) return "You haven't sent any messages today."
+  const total = rows.reduce((sum, r) => sum + r.message_count, 0)
+  const totalCost = rows.reduce((sum, r) => sum + r.total_cost, 0)
   const lines = rows.map(
-    (r) => `• ${r.modelo}: ${r.cantidad_mensajes} msgs — $${r.costo_total.toFixed(4)}`,
+    (r) => `• ${r.model}: ${r.message_count} msgs — $${r.total_cost.toFixed(4)}`,
   )
-  return `Mensajes de hoy (${total} en total, $${costoTotal.toFixed(4)})\n${lines.join("\n")}`
+  return `Today's messages (${total} total, $${totalCost.toFixed(4)})\n${lines.join("\n")}`
 }
 
 export const UsageStatsPlugin: Plugin = async ({ client }) => {
   return {
-    // 1) Tool invocable desde el chat: pídele al agente "usa usage_stats"
-    //    o crea un comando /stats que la llame directamente.
+    // 1) Tool callable from the chat: ask the agent "use usage_stats"
+    //    or create a /stats command that calls it directly.
     tool: {
       usage_stats: tool({
-        description: "Muestra cuántos mensajes se han usado hoy, agrupados por modelo",
+        description: "Shows how many messages have been used today, grouped by model",
         args: {},
         execute: async () => formatStats(getStatsRows()),
       }),
     },
 
-    // 2) Toast automático al terminar cada respuesta (solo funciona en modo TUI).
+    // 2) Automatic toast after each response finishes (TUI mode only).
     event: async ({ event }) => {
       if (event.type === "session.idle") {
         try {
           await client.tui.showToast({
             body: {
-              title: "Uso diario",
+              title: "Daily usage",
               message: formatStats(getStatsRows()),
               variant: "info",
             },
           })
         } catch {
-          // en modo web/headless no existe endpoint de toast, se ignora
+          // no toast endpoint in web/headless mode, ignored
         }
       }
     },

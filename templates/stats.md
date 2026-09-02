@@ -1,5 +1,5 @@
 ---
-description: Muestra el uso de mensajes de hoy por modelo
+description: Shows today's message usage by model
 ---
 
-Usa la tool usage_stats y devuelve el resultado tal cual, sin agregar comentarios.
+Use the usage_stats tool and return the result as-is, without adding comments.

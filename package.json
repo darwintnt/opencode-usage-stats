@@ -1,7 +1,7 @@
 {
   "name": "@darwintnt/opencode-usage-stats",
-  "version": "1.0.0",
-  "description": "Instala un plugin de opencode que muestra el uso diario de mensajes por modelo",
+  "version": "1.0.1",
+  "description": "Installs an OpenCode plugin that shows daily message usage by model",
   "author": "Darwin Gomez <darwintnt>",
   "license": "MIT",
   "bin": {

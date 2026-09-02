@@ -24,6 +24,6 @@ fs.copyFileSync(
   path.join(commandsDir, "stats.md"),
 )
 
-console.log("Plugin instalado en:", pluginsDir)
-console.log("Comando /stats instalado en:", commandsDir)
-console.log("Reinicia opencode y prueba /stats")
+console.log("Plugin installed at:", pluginsDir)
+console.log("/stats command installed at:", commandsDir)
+console.log("Restart opencode and try /stats")
