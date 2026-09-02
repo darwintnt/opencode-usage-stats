@@ -23,7 +23,7 @@ No requiere tocar `opencode.json`: OpenCode detecta automáticamente los archivo
 Ejecuta este comando para su instalación:
 
 ```bash
-npx opencode-usage-stats
+npx @darwintnt/opencode-usage-stats
 ```
 
 Por defecto instala en la configuración **global**:
@@ -34,7 +34,7 @@ Por defecto instala en la configuración **global**:
 Para instalarlo solo en el proyecto actual, agrega la bandera `--project`:
 
 ```bash
-npx opencode-usage-stats --project
+npx @darwintnt/opencode-usage-stats --project
 ```
 
 Esto lo instala en `.opencode/plugins/` y `.opencode/commands/` dentro del directorio donde ejecutes el comando.
